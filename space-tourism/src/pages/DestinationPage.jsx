@@ -21,13 +21,16 @@ function DestinationPage() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.3 }}
             className="relative flex items-center justify-center"
           >
             <div className="absolute h-[170px] w-[170px] rounded-full bg-white/5 blur-2xl md:h-[300px] md:w-[300px] lg:h-[445px] lg:w-[445px]" />
             <img
               src={active.image}
               alt={active.name}
+              loading="lazy"
+              decoding="async"
+              sizes="(min-width: 1024px) 445px, (min-width: 768px) 300px, 170px"
               className="relative h-[170px] w-[170px] md:h-[300px] md:w-[300px] lg:h-[445px] lg:w-[445px]"
             />
           </motion.div>

@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./components/Header.jsx";
+import { useMemo } from "react";
 
 import homeMobile from "./assets/home/background-home-mobile.jpg";
 import homeTablet from "./assets/home/background-home-tablet.jpg";
@@ -34,7 +35,10 @@ const BACKGROUNDS = {
 
 function App() {
   const location = useLocation();
-  const background = BACKGROUNDS[location.pathname] ?? BACKGROUNDS["/"];
+  const background = useMemo(
+    () => BACKGROUNDS[location.pathname] ?? BACKGROUNDS["/"],
+    [location.pathname],
+  );
 
   return (
     <div className="relative min-h-screen">
@@ -46,6 +50,8 @@ function App() {
           alt=""
           className="h-full w-full object-cover"
           aria-hidden="true"
+          loading="eager"
+          decoding="async"
         />
       </picture>
 

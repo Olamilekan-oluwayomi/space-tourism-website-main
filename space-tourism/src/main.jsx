@@ -3,20 +3,42 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./styles/index.css";
 import App from "./App.jsx";
-import Crew from "./pages/Crew.jsx";
-import Technology from "./pages/Technology.jsx";
-import HomePage from "./pages/HomePage.jsx";
-import DestinationPage from "./pages/DestinationPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <HomePage /> },
-      { path: "destination", element: <DestinationPage /> },
-      { path: "crew", element: <Crew /> },
-      { path: "technology", element: <Technology /> },
+      {
+        index: true,
+        lazy: async () => {
+          const { default: HomePage } = await import("./pages/HomePage.jsx");
+          return { Component: HomePage };
+        },
+      },
+      {
+        path: "destination",
+        lazy: async () => {
+          const { default: DestinationPage } =
+            await import("./pages/DestinationPage.jsx");
+          return { Component: DestinationPage };
+        },
+      },
+      {
+        path: "crew",
+        lazy: async () => {
+          const { default: Crew } = await import("./pages/Crew.jsx");
+          return { Component: Crew };
+        },
+      },
+      {
+        path: "technology",
+        lazy: async () => {
+          const { default: Technology } =
+            await import("./pages/Technology.jsx");
+          return { Component: Technology };
+        },
+      },
     ],
   },
 ]);

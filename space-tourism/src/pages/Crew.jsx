@@ -46,7 +46,7 @@ const CrewSection = () => {
               key={i}
               onClick={() => setIndex(i)}
               aria-label={`View crew member ${i + 1}`}
-              className={`h-3 w-3 rounded-full transition-all duration-300 ${
+              className={`h-3 w-3 rounded-full transition-all duration-300 cursor-pointer ${
                 index === i ? "bg-white" : "bg-white/20 hover:bg-white/50"
               }`}
             />
@@ -62,13 +62,16 @@ const CrewSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.4 }}
           >
             <source srcSet={currentMember.image.webp} type="image/webp" />
 
             <img
               src={currentMember.image.png}
               alt={currentMember.name}
+              loading="lazy"
+              decoding="async"
+              sizes="(min-width: 1024px) 600px, (min-width: 768px) 400px, 288px"
               className="h-72 md:h-136 lg:h-168 object-contain"
             />
           </motion.picture>
