@@ -12,7 +12,7 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="relative z-50 flex lg:w-full items-center gap-400 py-300 pl-400 pr-400 md:pr-0 lg:pl-800">
+    <header className="sticky top-0 z-50 flex lg:w-full items-center gap-400 py-300 pl-400 pr-400 md:pr-0 lg:pl-800">
       {/* Logo */}
       <NavLink
         to="/"
@@ -53,7 +53,7 @@ function Header() {
                 }
               >
                 {number && <span className="mr-100 font-bold">{number}</span>}
-                {label && <span className="opacity-80">{label}</span>}
+                {label}
               </NavLink>
             </li>
           ))}

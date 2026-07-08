@@ -1,5 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Bellefair&family=Barlow:wght@400&family=Barlow+Condensed:wght@400;600;700&display=swap");
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Bellefair&family=Barlow:wght@400&family=Barlow+Condensed:wght@400;700&display=swap");
 
 @theme {
   /* Colors */
@@ -13,30 +13,30 @@
   --font-condensed: "Barlow Condensed", sans-serif;
 
   /* Spacing scale (from style guide section 03) */
-  --spacing-25: 0.125rem;   /* 2px */
-  --spacing-50: 0.25rem;    /* 4px */
-  --spacing-100: 0.5rem;    /* 8px */
-  --spacing-150: 0.75rem;   /* 12px */
-  --spacing-200: 1rem;      /* 16px */
-  --spacing-300: 1.5rem;    /* 24px */
-  --spacing-400: 2rem;      /* 32px */
-  --spacing-500: 2.5rem;    /* 40px */
-  --spacing-600: 3rem;      /* 48px */
-  --spacing-800: 4rem;      /* 64px */
-  --spacing-1000: 5rem;     /* 80px */
-  --spacing-1200: 6rem;     /* 96px */
-  --spacing-1600: 8rem;     /* 128px */
+  --spacing-25: 0.125rem; /* 2px */
+  --spacing-50: 0.25rem; /* 4px */
+  --spacing-100: 0.5rem; /* 8px */
+  --spacing-150: 0.75rem; /* 12px */
+  --spacing-200: 1rem; /* 16px */
+  --spacing-300: 1.5rem; /* 24px */
+  --spacing-400: 2rem; /* 32px */
+  --spacing-500: 2.5rem; /* 40px */
+  --spacing-600: 3rem; /* 48px */
+  --spacing-800: 4rem; /* 64px */
+  --spacing-1000: 5rem; /* 80px */
+  --spacing-1200: 6rem; /* 96px */
+  --spacing-1600: 8rem; /* 128px */
 
   /* Type presets (from style guide section 02) */
-  --text-preset-1: 9rem;      /* 144px - Bellefair */
-  --text-preset-2: 6.25rem;   /* 100px - Bellefair */
-  --text-preset-3: 3.5rem;    /* 56px - Bellefair */
-  --text-preset-4: 2rem;      /* 32px - Bellefair */
-  --text-preset-5: 1.75rem;   /* 28px - Barlow Condensed, 4px tracking */
-  --text-preset-6: 1.75rem;   /* 28px - Bellefair */
-  --text-preset-7: 0.875rem;  /* 14px - Barlow Condensed, 2px tracking */
-  --text-preset-8: 1rem;      /* 16px - Barlow Condensed, 2px tracking */
-  --text-preset-9: 1.125rem;  /* 18px - Barlow, 180% line height */
+  --text-preset-1: 9rem; /* 144px - Bellefair */
+  --text-preset-2: 6.25rem; /* 100px - Bellefair */
+  --text-preset-3: 3.5rem; /* 56px - Bellefair */
+  --text-preset-4: 2rem; /* 32px - Bellefair */
+  --text-preset-5: 1.75rem; /* 28px - Barlow Condensed, 4px tracking */
+  --text-preset-6: 1.75rem; /* 28px - Bellefair */
+  --text-preset-7: 0.875rem; /* 14px - Barlow Condensed, 2px tracking */
+  --text-preset-8: 1rem; /* 16px - Barlow Condensed, 2px tracking */
+  --text-preset-9: 1.125rem; /* 18px - Barlow, 180% line height */
 }
 
 body {
