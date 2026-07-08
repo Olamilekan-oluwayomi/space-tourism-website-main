@@ -11,22 +11,28 @@ This document outlines the comprehensive performance optimizations implemented t
 ## 1. Font Loading Optimization
 
 ### Problem
+
 Google Fonts were blocking render, causing slower First Contentful Paint (FCP) and Cumulative Layout Shift (CLS).
 
 ### Solution
+
 Added `font-display: swap` to the font import in `src/styles/index.css`:
 
 ```css
-@import url("https://fonts.googleapis.com/css2?family=Bellefair&family=Barlow:wght@400&family=Barlow+Condensed:wght@400;600;700&display=swap") layer(base);
+@import url("https://fonts.googleapis.com/css2?family=Bellefair&family=Barlow:wght@400&family=Barlow+Condensed:wght@400;600;700&display=swap")
+layer(base);
 ```
 
 ### Impact
+
 - **FCP**: ~300-500ms improvement (fonts no longer block render)
 - **CLS**: Reduced layout shift during font swap
 - **User Experience**: Fallback system fonts display immediately while Google Fonts load
 
 ### Best Practice
+
 Font-display strategies:
+
 - `auto` (default): Browser decides (can block render)
 - `swap`: Use fallback immediately, swap when font loads ✅ **Used here**
 - `block`: Brief whitespace, then swap (3s timeout)
@@ -38,14 +44,17 @@ Font-display strategies:
 ## 2. Responsive Image Loading
 
 ### Problem
+
 - Images loaded at fixed sizes regardless of device
 - Mobile devices fetching desktop-sized images
 - No lazy loading deferred off-screen image requests
 
 ### Solution
+
 Implemented responsive image sizing across three key pages:
 
 #### **Crew.jsx**
+
 ```jsx
 <img
   src={currentMember.image.png}
@@ -58,6 +67,7 @@ Implemented responsive image sizing across three key pages:
 ```
 
 #### **DestinationPage.jsx**
+
 ```jsx
 <img
   src={active.image}
@@ -70,6 +80,7 @@ Implemented responsive image sizing across three key pages:
 ```
 
 #### **Technology.jsx**
+
 ```jsx
 <img
   src={activeTechnology.images.landscape}
@@ -83,13 +94,14 @@ Implemented responsive image sizing across three key pages:
 
 ### Key Attributes Explained
 
-| Attribute | Purpose | Impact |
-|-----------|---------|--------|
-| `loading="lazy"` | Defer loading off-screen images | ✅ Faster initial page load |
-| `decoding="async"` | Non-blocking image decoding | ✅ Smoother main thread |
-| `sizes` | Tell browser optimal image width | ✅ Load appropriately-sized image |
+| Attribute          | Purpose                          | Impact                            |
+| ------------------ | -------------------------------- | --------------------------------- |
+| `loading="lazy"`   | Defer loading off-screen images  | ✅ Faster initial page load       |
+| `decoding="async"` | Non-blocking image decoding      | ✅ Smoother main thread           |
+| `sizes`            | Tell browser optimal image width | ✅ Load appropriately-sized image |
 
 ### Impact
+
 - **LCP**: 200-400ms improvement (smaller images load faster)
 - **Network Requests**: ~30-40% reduction in bytes for mobile
 - **Time to Interactive**: Improved by deferring non-critical images
@@ -99,18 +111,22 @@ Implemented responsive image sizing across three key pages:
 ## 3. Animation Performance Tuning
 
 ### Problem
+
 Framer-motion animations with `duration: 0.35-0.6` seconds were adding unnecessary latency.
 
 ### Solution
+
 Reduced animation durations for snappier interactions:
 
 **Before:**
+
 ```jsx
 transition={{ duration: 0.6 }}  // Crew images
 transition={{ duration: 0.35 }} // Technology content
 ```
 
 **After:**
+
 ```jsx
 transition={{ duration: 0.4 }}  // Crew images (was 0.6)
 transition={{ duration: 0.3 }}  // Technology content (was 0.35)
@@ -118,11 +134,13 @@ transition={{ duration: 0.3 }}  // Destination images (was 0.4)
 ```
 
 ### Impact
+
 - **Perceived Performance**: Animations feel snappier
 - **TBT (Total Blocking Time)**: Reduced frame duration impact
 - **Still Smooth**: 16.7ms per frame at 60fps is maintained
 
 ### Trade-off
+
 - Slightly less "smooth" feel, but more responsive perception
 - Industry standard: Fast animations = perceived performance boost
 
@@ -131,9 +149,11 @@ transition={{ duration: 0.3 }}  // Destination images (was 0.4)
 ## 4. Background Image Route Optimization
 
 ### Problem
+
 All background images imported at module load, even if user stayed on home page.
 
 ### Solution
+
 Changed from glob imports to direct imports with route-based lookup in `src/App.jsx`:
 
 ```jsx
@@ -154,6 +174,7 @@ const BACKGROUNDS = {
 ```
 
 ### Impact
+
 - **Bundle Size**: All backgrounds still in bundle, but strategic loading
 - **Viewport**: Active background prioritizes display
 - **Memory**: Prevents simultaneous loading of all backgrounds in browser
@@ -163,9 +184,11 @@ const BACKGROUNDS = {
 ## 5. Build Optimization
 
 ### Problem
+
 Production build lacked aggressive minification and had no code splitting strategy.
 
 ### Solution
+
 Enhanced `vite.config.js` with:
 
 ```javascript
@@ -194,23 +217,26 @@ build: {
 
 ### Changes Breakdown
 
-| Feature | Benefit |
-|---------|---------|
-| **Terser minification** | Remove dead code, compress variable names |
+| Feature                   | Benefit                                           |
+| ------------------------- | ------------------------------------------------- |
+| **Terser minification**   | Remove dead code, compress variable names         |
 | **Drop console/debugger** | Smaller bundle (consoles stripped for production) |
-| **Manual chunks** | Separate vendor libraries from app code |
+| **Manual chunks**         | Separate vendor libraries from app code           |
 
 ### Bundle Size Impact
 
 **Before:**
+
 - Main bundle: 196.25 kB (gzipped: 62.25 kB)
 
 **After code splitting:**
+
 - Main app: ~180 kB (gzipped: ~55-60 kB)
-- Framer-motion: 134.67 kB (gzipped: 43.57 kB) - *loaded on demand*
-- React-router: 97.98 kB (gzipped: 32.31 kB) - *loaded on demand*
+- Framer-motion: 134.67 kB (gzipped: 43.57 kB) - _loaded on demand_
+- React-router: 97.98 kB (gzipped: 32.31 kB) - _loaded on demand_
 
 ### Impact
+
 - **Parse Time**: Smaller initial JavaScript to parse
 - **Execution Time**: Main thread less blocked
 - **Bundle Speed**: Faster initial download
@@ -222,24 +248,29 @@ build: {
 ### Decision: Keep Routes in Main Bundle
 
 **Initially Tried:** Lazy-loaded routes with React.lazy() + Suspense
+
 ```jsx
 const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 ```
 
-**Result:** Score *decreased* from 43→40 (route chunks added latency)
+**Result:** Score _decreased_ from 43→40 (route chunks added latency)
 
 **Final Decision:** Direct imports keep routes in main bundle
+
 ```jsx
 import HomePage from "./pages/HomePage.jsx";
 ```
 
 ### Rationale
+
 On mobile at 4G speeds:
+
 - Lazy loading route adds **300-500ms** to route transition (download + parse)
 - LCP metric penalizes delayed content paint
 - Trade-off: Larger main bundle vs. better perceived performance
 
 ### When Lazy Loading Works Better
+
 - Desktop users (faster networks)
 - Apps with many rarely-used routes
 - Progressive apps where user navigates intentionally
@@ -249,9 +280,11 @@ On mobile at 4G speeds:
 ## 7. Dependency Management
 
 ### Added
+
 - **terser** (`npm install --save-dev terser`): Required for production minification
-  
+
 ### Rationale
+
 Vite v3+ made terser optional. Installed because aggressive compression significantly reduces bundle size on mobile where bandwidth is limited.
 
 ---
@@ -260,13 +293,14 @@ Vite v3+ made terser optional. Installed because aggressive compression signific
 
 ### Core Web Vitals (CWV)
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| **LCP** (Largest Contentful Paint) | < 2.5s | Optimized ✅ |
-| **FID** (First Input Delay) | < 100ms | Optimized ✅ |
-| **CLS** (Cumulative Layout Shift) | < 0.1 | Optimized ✅ |
+| Metric                             | Target  | Status       |
+| ---------------------------------- | ------- | ------------ |
+| **LCP** (Largest Contentful Paint) | < 2.5s  | Optimized ✅ |
+| **FID** (First Input Delay)        | < 100ms | Optimized ✅ |
+| **CLS** (Cumulative Layout Shift)  | < 0.1   | Optimized ✅ |
 
 ### Mobile Lighthouse Metrics
+
 - **Performance Score**: 40→50+ (target)
 - **Accessibility**: 90+ (maintained)
 - **Best Practices**: 90+ (maintained)
@@ -277,12 +311,14 @@ Vite v3+ made terser optional. Installed because aggressive compression signific
 ## Testing the Optimizations
 
 ### Desktop Browser
+
 ```bash
 npm run dev  # Start dev server
 # Visit http://localhost:5174 and use DevTools Lighthouse
 ```
 
 ### Mobile Simulation (Recommended)
+
 1. Open DevTools (F12)
 2. Click **Lighthouse** tab
 3. Select **Mobile** device
@@ -291,7 +327,9 @@ npm run dev  # Start dev server
 6. Compare metrics against previous baseline
 
 ### Real Device Testing
+
 For production builds:
+
 ```bash
 npm run build
 npm run preview  # Preview production build locally
@@ -304,16 +342,19 @@ Then test with actual mobile device on WiFi/4G.
 ## Future Optimization Opportunities
 
 ### High Impact (Consider implementing)
+
 1. **WebP Image Conversion**: Crew PNG images (92-127 kB) → WebP (could save 40%)
 2. **Reduce Framer-Motion**: Use CSS animations for simpler transitions
 3. **Remove Unused CSS**: Potentially unused Tailwind utilities
 
 ### Medium Impact
+
 4. **Service Worker**: Offline support and asset caching
 5. **Image Optimization**: Compress JPG/PNG without quality loss
 6. **Critical CSS**: Inline above-the-fold styles
 
 ### Lower Priority
+
 7. **Next.js Migration**: Would provide automatic optimization
 8. **Static Generation**: Pre-render pages if content is static
 
